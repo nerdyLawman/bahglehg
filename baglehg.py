@@ -407,7 +407,7 @@ def readOut(inLines):
     line()
     horiz = len(max(lines, key=len))
     shift = term.width/2 - horiz/2 - xpad
-    for i in range(len(lines)):
+    while i <= len(lines):
         with term.location(1,0):
             paintHeader(0)
             print(style.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
@@ -415,9 +415,15 @@ def readOut(inLines):
             paintBackground(term.height+1, style.SCREENBG)
             print(term.move(term.height-1, 1))
             break
+        if cmd == 'up':
+            print(term.move(1,3))
+            print(term.clear())
+            i -= 10
+            cmd = ''
         height += 1
         #lineOut(lines[i])
         shiftOut(lines[i], shift)
+        i += 1
         if height > term.height-20:
             with term.location(1,0):
                 paintHeader(1)
