@@ -1,10 +1,12 @@
 import time
+import datetime
 import sys
 import os
+import socket
 from random import randint
 from blessed import Terminal
 
-smallboy = """MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+smallboy = """\n\nMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMMWNKXXNMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMKxoccloOXMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMN0ddOXd::;:o0WMMMMMMMMMMMMMMMMMMMMMMMM
@@ -36,7 +38,7 @@ MMMMMMMMMMMMMMMMNWMMMMOo0Xo;OMMMXkKMMMKOXMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMWWMMNNWMMMMWMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"""
 
-bogboy = """MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+bogboy = """\n\nMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWNXNNWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNOoclooddd0WMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
@@ -202,22 +204,40 @@ investigated  for cardiac or other medical  conditions.  Patients
 with  severe  or  multiple cardiac defects may  be  treated  more
 safely in a hospital dental department."""
 
+files = """bonb.txt
+held.txt
+randy.txt
+ghobst.txt
+flyntt.txt
+gorld.txt
+huchoygd.txt
+rhimbus.txt
+blandout.txt
+meemon.txt
+pordis.txt
+grayhound.txt"""
+
+#[ty] [ok] [pa] [fa] [sm] [wo] [ri] [ce] [%]
+
 boot = """\n\n
-Testing testing
-[ty]\nThis should <b>be typed</e>\n[/ty]
-[ce]\nBuddy Testing\n[/ce]
-[ok]\nthis should be OK
-this should too\n[/ok]
+BOGLEG v0.2 INITILIZING
+[el]\n>> finding secure conncetion
+>> establishing network
+>> updating repository\n[/el]
+[%]\n[%]\n[%]
 
-[ok]\nI'm gonna go ahead and call this okay as well\n[/ok]
-[fa]\nAnd maybe this one fails\n[/fa]
-[pa]\nBut this passes\n[/pa]
-[:*]
-back to normal for a spell
-[ri]\nbut then right\n[/ri]
-[ty]\nbut more typing\n[/ty]
+[wo]\nCHECKING WUBMIS\n[/wo]
+[ok]\npitterpat
+dance fabric
+notched hobocamp
+ghosting the spookware\n[/ok]
 
-[%]"""
+[ty]\nThe normal amount of typing for a progam like this is probably not
+something you've seen before but then again we're living in a different
+era entirely. Don't forget to bag your boot\n[/ty]
+
+[wo]\nCopyright 1993. Boghlehg Industries Unlimited PROXXY//.1340 Epsillon Dandry Hypno.\n[/wo]
+"""
 
 #STYLE CLASSES
 class fg:
@@ -252,10 +272,10 @@ class style:
     REVERSE = '\033[7m'
     DISABLE = '\033[02m'
     HOLD = '\n\033[F\033[K'
-    SCREENFG = BOLD + fg.BLACK
+    SCREENFG = BOLD + fg.BLUE
     SCREENBG = bg.WHITE
     SCREEN = SCREENFG + SCREENBG
-    HEADERFG = fg.BLACK
+    HEADERFG = fg.WHITE
     HEADERBG = bg.BLUE
     HEADER = HEADERFG + HEADERBG
     HIGHLIGHT = HEADER
@@ -263,11 +283,12 @@ class style:
 class env:
     DEBUG = False
     BLESSED = True
+    LOGIN = False
     INTRO = True
     BOOTUP = True
 
 term = Terminal()
-delay = 0.005
+delay = 0.0075
 organic = 30
 if env.BLESSED:
     width = term.width
@@ -314,6 +335,22 @@ def rightWrite(out):
     else:
         write(out)
 
+def line():
+    if env.BLESSED:
+        global y
+        if y < term.height - 2:
+            y += 1
+            paintHeader(0)
+        else:
+            paintBackground(y+1, style.SCREENBG)
+            paintHeader(1)
+    else:
+        print('')
+
+def jump(j):
+    for i in range(j):
+        line()
+
 #GIVE ME PAUSE
 def pause():
     time.sleep(delay)
@@ -342,11 +379,9 @@ def paintBackground(ypos, color):
 
 def paintHeader(ypos):
     if env.BLESSED:
-        msg = "B0GGY L3GGYv 0.2"
+        msg = "B0GGY L3GGY v0.2"
         half = term.width/2 - len(msg)/2
-        adjust = 0
-        if half%2 == 1:
-            adjust = 1
+        adjust = term.width - half*2 - len(msg)
         with term.location(0,ypos-1):
             print(style.HEADER + ' '*half + msg + ' '*half + ' '*adjust)
 
@@ -358,19 +393,12 @@ def headline(msg):
             print(style.HEADER + ' '*half + msg + ' '*half)
         line()
 
-def line():
-    if env.BLESSED:
-        global y
-        if y < term.height - 2:
-            y += 1
-            paintHeader(0)
-        else:
-            paintBackground(y+1, style.SCREENBG)
-            paintHeader(1)
-    else:
-        print('')
-
 #OUTPUT STYLES
+def lineOut(inLine):
+    write(inLine)
+    pauseO()
+    line()
+
 def typeOut(inLine):
     outline = ''
     for char in inLine:
@@ -394,51 +422,6 @@ def wordOut(inLine):
         pauseO()
     line()
 
-def readOut(inLines):
-    height = 1
-    global y
-    i = 0
-    cmd = ''
-    lines = inLines.split('\n')
-    print(term.move_down())
-    #centerOut(style.HIGHLIGHT + 'LOG READER' + style.RESET + style.SCREEN)
-    headline('LOG READER')
-    line()
-    line()
-    horiz = len(max(lines, key=len))
-    shift = term.width/2 - horiz/2 - xpad
-    while i <= len(lines):
-        with term.location(1,0):
-            paintHeader(0)
-            print(style.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
-        if cmd == 'q':
-            paintBackground(term.height+1, style.SCREENBG)
-            print(term.move(term.height-1, 1))
-            break
-        if cmd == 'up':
-            print(term.move(1,3))
-            print(term.clear())
-            i -= 10
-            cmd = ''
-        height += 1
-        #lineOut(lines[i])
-        shiftOut(lines[i], shift)
-        i += 1
-        if height > term.height-20:
-            with term.location(1,0):
-                paintHeader(1)
-                print(style.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
-            height -= 10
-            with term.location(0,term.height-2):
-                cmd = raw_input(style.SCREEN + ' give cmd: ' + style.SCREEN)
-            #y -= 1
-            paintBackground(term.height-2, style.SCREENBG)
-
-def lineOut(inLine):
-    write(inLine)
-    pauseO()
-    line()
-
 def shiftOut(inLine, shift):
     pad = ''
     for i in range(shift):
@@ -459,7 +442,10 @@ def rightOut(inLine):
 
 def testOut(inLine, state):
     math = width-(xpad*2+(len(state)+2)+len(inLine))
-    testLine = inLine + ' ' + '-' * math + style.HIGHLIGHT + state + style.RESET
+    if env.BLESSED:
+        testLine = inLine + ' ' + '-' * math + style.HIGHLIGHT + state + style.RESET + style.SCREEN
+    else:
+        testLine = inLine + ' ' + '-' * math + state
     write(testLine)
     pauseO()
     line()
@@ -492,31 +478,85 @@ def dotOut(inLine):
         pauseRL()
     line()
 
-def main():
+#CLI PROGRAMS
+def colOut(inList):
+    pad = ' ' * 5
+    listwidth = len(max(inList.split('\n'), key=len))
+    row = ''
+    headline(':::FILEZ::::')
+    jump(2)
+    for thing in inList.split('\n'):
+        extra = ' ' * (listwidth - len(thing))
+        row += thing + pad + extra
+        if len(row) >= term.width - xpad*2:
+            lineOut(row)
+            row = ''
+
+def readOut(inLines):
+    height = 1
     global y
-    y = 3
+    i = 0
+    cmd = ''
+    lines = inLines.split('\n')
+    if env.BLESSED:
+        headline('LOG READER')
+        jump(2)
+        horiz = len(max(lines, key=len))
+        shift = term.width/2 - horiz/2 - xpad
+    else:
+        print('\nLOG READER\n')
+    while i <= len(lines)-1:
+        with term.location(1,0):
+            paintHeader(0)
+            print(style.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
+        if cmd == 'q':
+            paintBackground(term.height+1, style.SCREENBG)
+            break
+        if cmd == 'up':
+            print(term.move(1,3))
+            print(term.clear())
+            i -= 10
+            cmd = ''
+        height += 1
+        if env.BLESSED:
+            shiftOut(lines[i], shift)
+        else:
+            lineOut(lines[i])
+        i += 1
+        if height > term.height-20:
+            if env.BLESSED:
+                with term.location(1,0):
+                    paintHeader(1)
+                    print(style.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
+                with term.location(0,term.height-2):
+                    cmd = raw_input(style.SCREEN + ' continue (q to quit): ' + style.SCREEN)
+                paintBackground(term.height-2, style.SCREENBG)
+            else:
+                print('')
+                cmd = raw_input('')
+            height -= 10
+
+def main():
 
     if env.BLESSED:
         height, width = term.height, term.width
     else:
         height, width = 25, 80
 
-    #FLAGS
-    typing = False
-    ok = False
-    passf = False
-    failf = False
-    same = False
-    word = False
-    elip = False
-    center = False
-    right = False
+    #LOGIN
+    if env.LOGIN:
+        init = ''
+        while init != '849.9418':
+            init = raw_input('IP: ')
+        while init != 'bogleg':
+            init = raw_input('UN: ')
+        while init != 'xxx':
+            init = raw_input('PW: ')
 
-    #SET STAGE
+    #SET WINDOW
     sys.stdout.write("\x1b]2;BOHHHGLEHHGGGGGGGGG!!!!!???!!!?!?\x07")
     os.system('clear')
     pauseRL()
-
     if env.BLESSED:
         print(term.move(0,1))
         for ypos in range(1,term.height+1):
@@ -525,6 +565,9 @@ def main():
 
     #INTRO
     if env.INTRO:
+        pauseRL()
+        pauseRL()
+        pauseRL()
         if width - xpad*2 >= 100:
             bogs = bogboy.split('\n')
         else:
@@ -533,8 +576,19 @@ def main():
             centerOut(bog)
             pauseO()
 
-    #process boot script
+    #BOOTUP
     if env.BOOTUP:
+        #FLAGS (FOR BOOT)
+        typing = False
+        ok = False
+        passf = False
+        failf = False
+        same = False
+        word = False
+        elip = False
+        center = False
+        right = False
+
         formatted = format(boot)
         lines = formatted.split('\n')
         for line in lines:
@@ -601,23 +655,38 @@ def main():
                 else:
                     lineOut(line)
 
-    #CLI
+    #CLI / MAIN PROGRAM
     cmd = ''
+    host = socket.gethostbyname(socket.gethostname())
     while cmd != 'exit':
         if env.BLESSED:
+            now = datetime.datetime.now()
+            status = now.strftime("%Y-%m-%d %H:%M") + ' | h for HELP | exit to quit'
             paintHeader(0)
-            paintBackground(term.height-2, style.SCREENBG)
-
             with term.location(xpad, term.height-2):
-                cmd = raw_input(style.SCREEN + "$:> " + style.SCREEN)
+                paintBackground(term.height-2, style.HIGHLIGHT)
+            with term.location(term.width-xpad-len(status), term.height-2):
+                print(style.HIGHLIGHT + status)
+            with term.location(xpad, term.height-2):
+                cmd = raw_input(style.HIGHLIGHT + '$' + host + ':> ' + style.HIGHLIGHT)
         else:
-            cmd = raw_input("$:> ")
+            cmd = raw_input('$' + host + ':> ')
 
+        #CLI PROGRAMS
+
+        #LOG (TO BECOME READER)
         if cmd == 'log':
             if env.BLESSED:
                 paintHeader(0)
                 paintBackground(term.height-2, style.SCREENBG)
             readOut(log)
+
+        #FILES
+        if cmd == 'files':
+            if env.BLESSED:
+                paintHeader(0)
+                paintBackground(term.height-2, style.SCREENBG)
+            colOut(files)
 
     #CLEAN UP
     print(style.RESET)
