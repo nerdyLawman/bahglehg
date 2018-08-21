@@ -1,3 +1,33 @@
+#[ty] [ok] [pa] [fa] [sm] [wo] [ri] [ce] [%]
+boot = """BOGLEG v0.2 INITIALIZING
+[el]>> finding secure conncetion
+[el]>> establishing network
+[el]>> updating repository
+[%p]loading
+[%p]system
+[%p]hoobly
+
+[wo]<h>CHECKING WUBMIS</e>
+[ok]pitterpat
+[ok]dance fabric
+[ok]notched hobocamp
+[ok]ghosting the spookware
+
+[ty]he normal amount of typing for a progam like this is probably not
+[ty]something you've seen before but then again we're living in a different
+[ty]era entirely. Don't forget to bag your boot
+
+[wo]Copyright 1993. Boghlehg Industries PROXXY//.1340 Epsillon Dandry Hypno.
+"""
+
+
+boglog =""" /$$$$$$$$   /$$$$$$$   /$$$$$$$  /$$       /$$$$$$$$  /$$$$$$$
+| $$___  $$ /$$___  $$ /$$ ____/ | $$      | $$ ____/ /$$ ____/
+| $$$$$$$$ | $$   \ $$| $$  /$$$$| $$      | $$$$$$$$| $$  /$$$$
+| $$___  $$| $$   | $$| $$   | $$| $$      | $$ ____/| $$   | $$
+| $$$$$$$$ |  $$$$$$$/|  $$$$$$$/| $$$$$$$$| $$$$$$$$|  $$$$$$$/
+|________/  \_______/  \_______/ |________/|________/ \_______/ """
+
 smallboy = """MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMMWNKXXNMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMKxoccloOXMMMMMMMMMMMMMMMMMMMMMMMMMM
