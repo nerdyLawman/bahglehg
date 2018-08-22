@@ -1,11 +1,11 @@
-from bogclass import style, fg, bg, env
+from bogclass import env
 from bogfunctions import *
 from bogstandards import *
 
 def windowdress(bog):
     print(bog.term.move(0,1))
     for ypos in range(1,bog.term.height+1):
-        bog.paintBackground(ypos, style.SCREENBG)
+        bog.paintBackground(ypos, bog.theme.SCREENBG)
     pauseRL()
     bog.jump(3)
 
@@ -18,21 +18,21 @@ def login():
     while init != 'xxx':
         init = raw_input('PW: ')
 
-def format(badin):
-    goodout = badin.replace('<b>', style.BRIGHT)
-    goodout = goodout.replace('<u>', style.UNDERLINE)
-    goodout = goodout.replace('<r>', fg.RED)
-    goodout = goodout.replace('</r>', style.RESET)
-    goodout = goodout.replace('<h>', style.REVERSE)
+def format(b, badin):
+    goodout = badin.replace('<b>', b.theme.BRIGHT)
+    goodout = goodout.replace('<u>', b.theme.UNDERLINE)
+    goodout = goodout.replace('<r>', b.theme.HIGHLIGHT)
+    goodout = goodout.replace('</r>', b.theme.RESET)
+    goodout = goodout.replace('<h>', b.theme.REVERSE)
     if env.BLESSED:
-        goodout = goodout.replace('</e>', style.RESET + style.SCREEN)
+        goodout = goodout.replace('</e>', b.theme.RESET + b.theme.SCREEN)
     else:
-        goodout = goodout.replace('</e>', style.RESET)
+        goodout = goodout.replace('</e>', b.theme.RESET)
     return goodout
 
 def bootup(bog):
     bog.jump(2)
-    formatted = format(boot)
+    formatted = format(bog, boot)
     lines = formatted.split('\n')
     for line in lines:
         if line[:4] == '[ty]':
@@ -103,9 +103,9 @@ def reader(bog, inLines):
     while i <= len(lines)-1:
         with bog.term.location(1,0):
             bog.paintHeader(0)
-            print(style.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
+            print(bog.theme.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
         if cmd == 'q':
-            bog.paintBackground(bog.term.height+1, style.SCREENBG)
+            bog.paintBackground(bog.term.height+1, bog.theme.SCREENBG)
             break
         if cmd == 'up':
             print(bog.term.move(1,3))
@@ -122,10 +122,10 @@ def reader(bog, inLines):
             if env.BLESSED:
                 with bog.term.location(1,0):
                     bog.paintHeader(1)
-                    print(style.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
+                    print(bog.theme.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
                 with bog.term.location(0,bog.term.height-2):
-                    cmd = raw_input(style.SCREEN + ' continue (q to quit): ' + style.SCREEN)
-                bog.paintBackground(bog.term.height-2, style.SCREENBG)
+                    cmd = raw_input(bog.theme.SCREEN + ' continue (q to quit): ' + bog.theme.SCREEN)
+                bog.paintBackground(bog.term.height-2, bog.theme.SCREENBG)
             else:
                 print('')
                 cmd = raw_input('')

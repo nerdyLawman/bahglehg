@@ -1,6 +1,5 @@
 import time
 from random import randint
-from bogclass import style
 
 class timing:
     DELAY = 0.0075
@@ -67,7 +66,7 @@ def rightOut(b, inLine):
 
 def testOut(b, inLine, state):
     math = b.term.width-(b.xpad*2+(len(state)+2)+len(inLine))
-    testLine = inLine + ' ' + '-' * math + style.REVERSE + state + style.RESET
+    testLine = inLine + ' ' + '-' * math + b.theme.REVERSE + state + b.theme.RESET
     #testLine = inLine + ' ' + '-' * math + state
     b.write(testLine)
     pauseO()
@@ -96,4 +95,4 @@ def dotOut(b, inLine):
 
 def cmdBreak(b):
     b.paintHeader(0)
-    b.paintBackground(b.height-2, style.SCREENBG)
+    b.paintBackground(b.height-2, b.theme.SCREENBG)

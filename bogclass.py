@@ -1,4 +1,5 @@
 from blessed import Terminal
+import datetime
 import sys
 
 class env:
@@ -31,7 +32,7 @@ class bg:
     WHITE   = '\033[47m'
     RESET   = '\033[49m'
 
-class style:
+class default:
     BRIGHT    = '\033[1m'
     DIM       = '\033[2m'
     NORMAL    = '\033[22m'
@@ -49,6 +50,42 @@ class style:
     HEADER = HEADERFG + HEADERBG
     HIGHLIGHT = HEADER
 
+class red:
+    BRIGHT    = '\033[1m'
+    DIM       = '\033[2m'
+    NORMAL    = '\033[22m'
+    RESET = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    REVERSE = '\033[7m'
+    DISABLE = '\033[02m'
+    HOLD = '\n\033[F\033[K'
+    SCREENFG = BOLD + fg.RED
+    SCREENBG = bg.YELLOW
+    SCREEN = SCREENFG + SCREENBG
+    HEADERFG = fg.YELLOW
+    HEADERBG = bg.RED
+    HEADER = HEADERFG + HEADERBG
+    HIGHLIGHT = HEADER
+
+class cyan:
+    BRIGHT    = '\033[1m'
+    DIM       = '\033[2m'
+    NORMAL    = '\033[22m'
+    RESET = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    REVERSE = '\033[7m'
+    DISABLE = '\033[02m'
+    HOLD = '\n\033[F\033[K'
+    SCREENFG = BOLD + fg.MAGENTA
+    SCREENBG = bg.CYAN
+    SCREEN = SCREENFG + SCREENBG
+    HEADERFG = fg.CYAN
+    HEADERBG = bg.MAGENTA
+    HEADER = HEADERFG + HEADERBG
+    HIGHLIGHT = HEADER
+
 class BOG:
 
     def __init__(self):
@@ -63,16 +100,20 @@ class BOG:
         self.host = ''
         self.prompt = '$' + self.host + ':> '
         self.statusprompt = ' | h for HELP | exit to quit'
+        self.theme = cyan
 
     def updateHost(self, host):
         self.host = host
         self.prompt = '$' + host + ':> '
 
+    def updateTheme(self):
+        self.theme = default
+
     #WRITE FUNCTIONS
     def write(self, out):
         if env.BLESSED:
             with self.term.hidden_cursor():
-                print(self.term.move(self.y-1, self.xpad) + style.SCREEN + out)
+                print(self.term.move(self.y-1, self.xpad) + self.theme.SCREEN + out)
         else:
             sys.stdout.write(style.HOLD + out)
             sys.stdout.flush()
@@ -80,14 +121,14 @@ class BOG:
     def centerWrite(self, out):
         if env.BLESSED:
             with self.term.hidden_cursor():
-                print(style.SCREEN + self.term.center(self.term.move_y(self.y-1) + out))
+                print(self.theme.SCREEN + self.term.center(self.term.move_y(self.y-1) + out))
         else:
              self.write(out)
 
     def rightWrite(self, out):
         if env.BLESSED:
             with self.term.hidden_cursor():
-                print(style.SCREEN + self.term.move(self.y-1, self.term.width-len(out)-self.xpad-1) + out)
+                print(self.theme.SCREEN + self.term.move(self.y-1, self.term.width-len(out)-self.xpad-1) + out)
         else:
             self.write(out)
 
@@ -97,7 +138,7 @@ class BOG:
                 self.y += 1
                 self.paintHeader(0)
             else:
-                self.paintBackground(self.y+1, style.SCREENBG)
+                self.paintBackground(self.y+1, self.theme.SCREENBG)
                 self.paintHeader(1)
         else:
             print('')
@@ -109,7 +150,7 @@ class BOG:
     #SCREEN PAINTING
     def paintLine(self):
         with self.term.hidden_cursor():
-            print(style.SCREEN + ' ' * self.term.width)
+            print(self.theme.SCREEN + ' ' * self.term.width)
 
     def paintBackground(self, ypos, color):
         with self.term.location(0, ypos):
@@ -120,10 +161,21 @@ class BOG:
         half = self.term.width/2 - len(msg)/2
         adjust = self.term.width - half*2 - len(msg)
         with self.term.location(0,ypos-1):
-            print(style.HEADER + ' '*half + msg + ' '*half + ' '*adjust)
+            print(self.theme.HEADER + ' '*half + msg + ' '*half + ' '*adjust)
 
     def headline(self, msg, ypos):
         half = (self.term.width - len(msg) - self.xpad*2) / 2
         with self.term.location(self.xpad, ypos):
-            print(style.HEADER + ' '*half + msg + ' '*half)
+            print(self.theme.HEADER + ' '*half + msg + ' '*half)
         self.line()
+
+    def updatePrompt(self):
+        self.paintHeader(0)
+        now = datetime.datetime.now()
+        status = now.strftime("%Y-%m-%d %H:%M") + self.statusprompt
+        with self.term.location(self.xpad, self.term.height-2):
+            self.paintBackground(self.term.height-2, self.theme.HIGHLIGHT)
+        with self.term.location(self.width-self.xpad-len(status), self.height-2):
+            print(self.theme.HIGHLIGHT + status)
+        with self.term.location(self.xpad, self.height-2):
+            return raw_input(self.theme.HIGHLIGHT + self.prompt + self.theme.HIGHLIGHT)

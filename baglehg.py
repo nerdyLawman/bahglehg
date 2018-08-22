@@ -1,12 +1,11 @@
-import datetime
 import sys
 import os
 import socket
 
-#from bogfiles import *
+from bogclass import BOG, env
+from bogfiles import *
 from bogfunctions import pause, pauseRL
-from bogclass import BOG, env, fg, bg, style
-from bogprograms import bootup, intro, windowdress, login, colOut, reader
+from bogprograms import bootup, intro, windowdress, login, colOut, reader, cmdBreak
 
 def main():
 
@@ -38,15 +37,7 @@ def main():
     run = True
     while run:
         if env.BLESSED:
-            now = datetime.datetime.now()
-            status = now.strftime("%Y-%m-%d %H:%M") + bog.statusprompt
-            bog.paintHeader(0)
-            with bog.term.location(bog.xpad, bog.term.height-2):
-                bog.paintBackground(bog.term.height-2, style.HIGHLIGHT)
-            with bog.term.location(bog.width-bog.xpad-len(status), bog.height-2):
-                print(style.HIGHLIGHT + status)
-            with bog.term.location(bog.xpad, bog.height-2):
-                cmd = raw_input(style.HIGHLIGHT + bog.prompt + style.HIGHLIGHT)
+            cmd = bog.updatePrompt()
         else:
             cmd = raw_input(bog.prompt)
         if cmd == 'exit' or cmd == 'q' or cmd == 'quit':
@@ -66,8 +57,12 @@ def main():
                 cmdBreak(bog)
             colOut(bog, files)
 
+        if cmd == 'theme':
+            if env.BLESSED:
+                bog.updateTheme()
+
     #CLEAN UP
-    print(style.RESET)
+    print(bog.theme.RESET)
     os.system('clear')
 
 if __name__ == '__main__':
