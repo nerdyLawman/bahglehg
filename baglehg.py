@@ -2,7 +2,7 @@ import sys
 import os
 import socket
 
-from bogclass import BOG, env
+from bogclass import BOG, env, common
 from bogfiles import *
 from bogfunctions import pause, pauseRL
 from bogprograms import bootup, intro, windowdress, login, colOut, reader, cmdBreak
@@ -17,9 +17,9 @@ def main():
         login()
 
     #SET WINDOW
+    os.system('clear')
     bog.updateHost(socket.gethostbyname(socket.gethostname()))
     sys.stdout.write(bog.window)
-    os.system('clear')
     pauseRL()
     if env.BLESSED:
         windowdress(bog)
@@ -32,7 +32,7 @@ def main():
     if env.INTRO:
         intro(bog)
 
-    #CLI / MAIN PROGRAM
+    #MAIN PROGRAM
     cmd = ''
     run = True
     while run:
@@ -40,6 +40,7 @@ def main():
             cmd = bog.updatePrompt()
         else:
             cmd = raw_input(bog.prompt)
+
         if cmd == 'exit' or cmd == 'q' or cmd == 'quit':
             run = False
 
@@ -57,12 +58,22 @@ def main():
                 cmdBreak(bog)
             colOut(bog, files)
 
+        # THEMES
         if cmd == 'theme':
             if env.BLESSED:
-                bog.updateTheme()
+                bog.updateTheme('default')
+        if cmd == 'theme red':
+            if env.BLESSED:
+                bog.updateTheme('red')
+        if cmd == 'theme cyan':
+            if env.BLESSED:
+                bog.updateTheme('cyan')
+        if cmd == 'theme black':
+            if env.BLESSED:
+                bog.updateTheme('black')
 
     #CLEAN UP
-    print(bog.theme.RESET)
+    print(common.RESET)
     os.system('clear')
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-from bogclass import env
+from bogclass import env, common
 from bogfunctions import *
 from bogstandards import *
 
@@ -19,15 +19,15 @@ def login():
         init = raw_input('PW: ')
 
 def format(b, badin):
-    goodout = badin.replace('<b>', b.theme.BRIGHT)
-    goodout = goodout.replace('<u>', b.theme.UNDERLINE)
+    goodout = badin.replace('<b>', common.BRIGHT)
+    goodout = goodout.replace('<u>', common.UNDERLINE)
     goodout = goodout.replace('<r>', b.theme.HIGHLIGHT)
-    goodout = goodout.replace('</r>', b.theme.RESET)
-    goodout = goodout.replace('<h>', b.theme.REVERSE)
+    goodout = goodout.replace('</r>', common.RESET)
+    goodout = goodout.replace('<h>', common.REVERSE)
     if env.BLESSED:
-        goodout = goodout.replace('</e>', b.theme.RESET + b.theme.SCREEN)
+        goodout = goodout.replace('</e>', common.RESET + b.theme.SCREEN)
     else:
-        goodout = goodout.replace('</e>', b.theme.RESET)
+        goodout = goodout.replace('</e>', common.RESET)
     return goodout
 
 def bootup(bog):

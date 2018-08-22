@@ -32,7 +32,7 @@ class bg:
     WHITE   = '\033[47m'
     RESET   = '\033[49m'
 
-class default:
+class common:
     BRIGHT    = '\033[1m'
     DIM       = '\033[2m'
     NORMAL    = '\033[22m'
@@ -42,7 +42,9 @@ class default:
     REVERSE = '\033[7m'
     DISABLE = '\033[02m'
     HOLD = '\n\033[F\033[K'
-    SCREENFG = BOLD + fg.BLUE
+
+class default:
+    SCREENFG = common.BOLD + fg.BLUE
     SCREENBG = bg.WHITE
     SCREEN = SCREENFG + SCREENBG
     HEADERFG = fg.WHITE
@@ -51,16 +53,7 @@ class default:
     HIGHLIGHT = HEADER
 
 class red:
-    BRIGHT    = '\033[1m'
-    DIM       = '\033[2m'
-    NORMAL    = '\033[22m'
-    RESET = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    REVERSE = '\033[7m'
-    DISABLE = '\033[02m'
-    HOLD = '\n\033[F\033[K'
-    SCREENFG = BOLD + fg.RED
+    SCREENFG = common.BOLD + fg.RED
     SCREENBG = bg.YELLOW
     SCREEN = SCREENFG + SCREENBG
     HEADERFG = fg.YELLOW
@@ -69,20 +62,20 @@ class red:
     HIGHLIGHT = HEADER
 
 class cyan:
-    BRIGHT    = '\033[1m'
-    DIM       = '\033[2m'
-    NORMAL    = '\033[22m'
-    RESET = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    REVERSE = '\033[7m'
-    DISABLE = '\033[02m'
-    HOLD = '\n\033[F\033[K'
-    SCREENFG = BOLD + fg.MAGENTA
+    SCREENFG = common.BOLD + fg.MAGENTA
     SCREENBG = bg.CYAN
     SCREEN = SCREENFG + SCREENBG
     HEADERFG = fg.CYAN
     HEADERBG = bg.MAGENTA
+    HEADER = HEADERFG + HEADERBG
+    HIGHLIGHT = HEADER
+
+class black:
+    SCREENFG = common.BOLD + fg.WHITE
+    SCREENBG = bg.BLACK
+    SCREEN = SCREENFG + SCREENBG
+    HEADERFG = fg.BLACK
+    HEADERBG = bg.WHITE
     HEADER = HEADERFG + HEADERBG
     HIGHLIGHT = HEADER
 
@@ -100,14 +93,21 @@ class BOG:
         self.host = ''
         self.prompt = '$' + self.host + ':> '
         self.statusprompt = ' | h for HELP | exit to quit'
-        self.theme = cyan
+        self.theme = red
 
     def updateHost(self, host):
         self.host = host
         self.prompt = '$' + host + ':> '
 
-    def updateTheme(self):
-        self.theme = default
+    def updateTheme(self, newtheme):
+        if newtheme == 'red':
+            self.theme = red
+        elif newtheme == 'cyan':
+            self.theme = cyan
+        elif newtheme == 'black':
+            self.theme = black
+        else:
+            self.theme = default
 
     #WRITE FUNCTIONS
     def write(self, out):

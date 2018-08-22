@@ -66,8 +66,7 @@ def rightOut(b, inLine):
 
 def testOut(b, inLine, state):
     math = b.term.width-(b.xpad*2+(len(state)+2)+len(inLine))
-    testLine = inLine + ' ' + '-' * math + b.theme.REVERSE + state + b.theme.RESET
-    #testLine = inLine + ' ' + '-' * math + state
+    testLine = inLine + ' ' + '-' * math + b.theme.HIGHLIGHT + state + b.theme.SCREEN
     b.write(testLine)
     pauseO()
     b.line()
