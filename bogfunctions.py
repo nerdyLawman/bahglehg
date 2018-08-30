@@ -5,8 +5,6 @@ class timing:
     DELAY = 0.0075
     ORGANIC = 30
 
-#HELPER FUNCTIONS
-
 #GIVE ME PAUSE
 def pause():
     time.sleep(timing.DELAY)
@@ -28,6 +26,11 @@ def lineOut(b, inLine):
     b.write(inLine)
     pauseO()
     b.line()
+
+def lineAt(b, inLine, at):
+    b.writeAt(inLine, at)
+    pauseO()
+    #b.line()
 
 def typeOut(b, inLine):
     outline = ''

@@ -2,12 +2,12 @@ from bogclass import env, common
 from bogfunctions import *
 from bogstandards import *
 
-def windowdress(bog):
-    print(bog.term.move(0,1))
-    for ypos in range(1,bog.term.height+1):
-        bog.paintBackground(ypos, bog.theme.SCREENBG)
+def windowdress(b):
+    print(b.term.move(0,1))
+    for ypos in range(1, b.term.height+1):
+        b.paintBackground(ypos, b.theme.SCREENBG)
     pauseRL()
-    bog.jump(3)
+    b.jump(3)
 
 def login():
     init = ''
@@ -30,49 +30,49 @@ def format(b, badin):
         goodout = goodout.replace('</e>', common.RESET)
     return goodout
 
-def bootup(bog):
-    bog.jump(2)
-    formatted = format(bog, boot)
+def bootup(b):
+    b.jump(2)
+    formatted = format(b, boot)
     lines = formatted.split('\n')
     for line in lines:
         if line[:4] == '[ty]':
-            typeOut(bog, line[4:])
+            typeOut(b, line[4:])
         elif line[:4] == '[ok]':
-            testOut(bog, line[4:], '[OK]')
+            testOut(b, line[4:], '[OK]')
         elif line[:4] == '[fa]':
-            testOut(bog, line[4:], '[FAIL]')
+            testOut(b, line[4:], '[FAIL]')
         elif line[:4] == '[pa]':
-            testOut(bog, line[4:], '[PASS]')
+            testOut(b, line[4:], '[PASS]')
         elif line[:4] == '[sm]':
-            sameOut(bog, line[4:])
+            sameOut(b, line[4:])
         elif line[:4] == '[wo]':
-            wordOut(bog, line[4:])
+            wordOut(b, line[4:])
         elif line[:4] == '[el]':
-            dotOut(bog, line[4:])
+            dotOut(b, line[4:])
         elif line[:4] == '[ri]':
-            rightOut(bog, line[4:])
+            rightOut(b, line[4:])
         elif line[:4] == '[ce]':
-            centerOut(bog, line[4:])
+            centerOut(b, line[4:])
         elif line[:4] == '[%p]':
-            loadOut(bog, line[4:])
+            loadOut(b, line[4:])
         elif line[:2] == '[:':
             for i in range(len(line)-1):
                 pauseO()
         else:
-            lineOut(bog, line)
+            lineOut(b, line)
 
-def intro(bog):
-    bog.jump(2)
+def intro(b):
+    b.jump(2)
     for i in range(3):
         pauseRL()
-    if bog.width -bog.xpad*2 >= 100:
+    if b.width -b.xpad*2 >= 100:
         logo = boglog.split('\n')
     else:
         logo = boglog.split('\n')
     for log in logo:
-        centerOut(bog, log)
+        centerOut(b, log)
         pauseO()
-    bog.jump(2)
+    b.jump(2)
 
 #CLI PROGRAMS
 def colOut(b, inList):
@@ -88,45 +88,58 @@ def colOut(b, inList):
             lineOut(b, row)
             row = ''
 
-def reader(bog, inLines):
-    height = 1
+def reader(b, inLines):
+    height = 2
     i = 0
     cmd = ''
     lines = inLines.split('\n')
     if env.BLESSED:
-        bog.headline('LOG READER', bog.y)
-        bog.jump(2)
+        #b.headline('LOG READER', b.y)
+        #b.jump(2)
         horiz = len(max(lines, key=len))
-        shift = bog.term.width/2 - horiz/2 - bog.xpad
+        shift = b.term.width/2 - horiz/2 - b.xpad
     else:
         print('\nLOG READER\n')
-    while i <= len(lines)-1:
-        with bog.term.location(1,0):
-            bog.paintHeader(0)
-            print(bog.theme.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
+    while i < len(lines):
+        with b.term.location(1,0):
+            b.paintHeader(0)
+            print(b.theme.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
         if cmd == 'q':
-            bog.paintBackground(bog.term.height+1, bog.theme.SCREENBG)
+            b.paintBackground(b.term.height+1, b.theme.SCREENBG)
             break
         if cmd == 'up':
-            print(bog.term.move(1,3))
-            print(bog.term.clear())
-            i -= 10
+            print(b.term.move(1,3))
+            print(b.term.clear())
+            i -= b.term.height - 7
+            height = 2
             cmd = ''
         height += 1
         if env.BLESSED:
-            shiftOut(bog, lines[i], shift)
+            lineAt(b, ' ' * shift + lines[i], height)
         else:
-            lineOut(bog, lines[i])
+            lineOut(b, lines[i])
         i += 1
-        if height > bog.term.height-20:
+        if height > b.term.height-6:
             if env.BLESSED:
-                with bog.term.location(1,0):
-                    bog.paintHeader(1)
-                    print(bog.theme.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
-                with bog.term.location(0,bog.term.height-2):
-                    cmd = raw_input(bog.theme.SCREEN + ' continue (q to quit): ' + bog.theme.SCREEN)
-                bog.paintBackground(bog.term.height-2, bog.theme.SCREENBG)
+                with b.term.location(1,0):
+                    b.paintHeader(1)
+                    print(b.theme.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
+                with b.term.location(0, b.term.height-2):
+                    cmd = raw_input(b.theme.SCREEN + ' continue (q to quit): ' + b.theme.SCREEN)
+                b.paintBackground(b.term.height-2, b.theme.SCREENBG)
             else:
                 print('')
                 cmd = raw_input('')
-            height -= 10
+            print(b.term.clear())
+            height = 2
+    if env.BLESSED:
+        with b.term.location(1,0):
+            b.paintHeader(1)
+            print(b.theme.HEADER + 'LOG.txt: ' + str(i) + ' of ' + str(len(lines)))
+        with b.term.location(0, b.term.height-2):
+            cmd = raw_input(b.theme.SCREEN + ' END OF DOC ' + b.theme.SCREEN)
+        b.paintBackground(b.term.height-2, b.theme.SCREENBG)
+    else:
+        print('')
+        cmd = raw_input('')
+    print(b.term.clear())
