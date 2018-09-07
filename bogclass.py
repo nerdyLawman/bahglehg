@@ -7,8 +7,8 @@ class env:
     DEBUG = False
     BLESSED = True
     LOGIN = False
-    INTRO = False
-    BOOTUP = False
+    INTRO = True
+    BOOTUP = True
 
 class BOG:
 
@@ -88,6 +88,10 @@ class BOG:
     def paintLine(self):
         with self.term.hidden_cursor():
             print(self.theme.SCREEN + ' ' * self.term.width)
+
+    def resetScreen(self):
+        for y in range(self.term.height):
+            self.paintBackground(y, self.theme.SCREENBG)
 
     def paintBackground(self, ypos, color):
         with self.term.location(0, ypos):

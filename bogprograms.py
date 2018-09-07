@@ -89,13 +89,34 @@ def colOut(b, inList):
             row = ''
 
 def reader(b, inLines):
+    headHold = b.header
+    b.header = 'LOG READER'
+    b.resetScreen()
     height = 2
     i = 0
     cmd = ''
-    lines = inLines.split('\n')
+    # simple read
+    #lines = inLines.split('\n')
+    lines = []
+    #makeLines
+    inLines = inLines.replace('\n\n', ' #BREAK ')
+    inLines = inLines.replace('\n', ' ')
+    inLines = inLines.replace('   ', '#TAB')
+    inLines = inLines.replace('  ', ' ')
+    inLines = inLines.replace('#TAB', '   ')
+
+    lineWidth = b.term.width - b.term.width/4
+    line = ''
+    for w in inLines.split(' '):
+        if w == '#BREAK':
+            lines.append('\n\n')
+            line = ''
+        elif len(w) + len(line) < lineWidth:
+            line += w + ' '
+        else:
+            lines.append(line + '\n')
+            line = w + ' '
     if env.BLESSED:
-        #b.headline('LOG READER', b.y)
-        #b.jump(2)
         horiz = len(max(lines, key=len))
         shift = b.term.width/2 - horiz/2 - b.xpad
     else:
@@ -113,11 +134,17 @@ def reader(b, inLines):
             i -= b.term.height - 7
             height = 2
             cmd = ''
-        height += 1
-        if env.BLESSED:
+        if cmd[:4] == 'line':
+            print(b.resetScreen())
+            #print(b.term.move(1,3))
+            i = int(cmd[5:])
+            height = 2
+            cmd = ''
+        elif env.BLESSED:
             lineAt(b, ' ' * shift + lines[i], height)
         else:
             lineOut(b, lines[i])
+        height += 1
         i += 1
         if height > b.term.height-6:
             if env.BLESSED:
@@ -142,4 +169,5 @@ def reader(b, inLines):
     else:
         print('')
         cmd = raw_input('')
+    b.header = headHold
     print(b.term.clear())
